@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Yes, graphics!</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages : [ "corechart" ]});
+        function drawChart() {
+            $.get("/api/v1/graph/terms", function(mydata) {
+                var data = google.visualization.arrayToDataTable(mydata);
+                var options = {
+                       title :      'Response time',
+                       hAxis :      {title : 'Time', titleTextStyle : {color : '#333', size: '12px'}},
+                       vAxis :      {minValue : 0},
+                       curveType:   'function',
+                       legend:      { position: 'right' }
+                };
+                var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
+                chart.draw(data, options);
+            });
+        }
+    </script>
+</head>
+<body onload="drawChart()" style="background-color:#C0C0C0;">
+Graphs...<br>
+<div id="chart_div1" style="width: 1400px; height: 380px;"></div>
+</body>
+</html>
