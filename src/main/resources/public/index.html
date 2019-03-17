@@ -6,7 +6,7 @@
     <script type="text/javascript">
         google.load("visualization", "1", {packages : [ "corechart" ]});
         function drawChart() {
-            $.get("/api/v1/graph/terms", function(mydata) {
+            $.get("/api/v1/graph/ping1", function(mydata) {
                 var data = google.visualization.arrayToDataTable(mydata);
                 var options = {
                        title :      'Response time',

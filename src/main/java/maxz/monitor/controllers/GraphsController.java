@@ -2,6 +2,7 @@ package maxz.monitor.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import maxz.monitor.services.GraphDataHolder;
+import maxz.monitor.services.callers.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +19,10 @@ public class GraphsController {
     @Autowired
     GraphDataHolder graphDataHolder;
 
-    @RequestMapping(value = {"/terms", "/other"})
+    @RequestMapping(value = {"/ping1", "/other"})
     public Collection<Object[]> getPlannerData(HttpServletRequest request) throws Exception {
         log.info("request {} from {}", request.getRequestURI(), request.getRemoteAddr());
-        String u = request.getRequestURI();
-        int i = u.lastIndexOf("/");
-        String x = u.substring(i+1);
+        String x = StringUtils.getAfterLast(request.getRequestURI(), "/");
         Collection<Object[]> byGroup = graphDataHolder.getBySource(x);
         printEntries(x, byGroup);
         return byGroup;
@@ -32,9 +31,7 @@ public class GraphsController {
     @RequestMapping(value = {"/planner"})
     public Collection<Object[]> getPlannerData2(HttpServletRequest request) throws Exception {
         log.info("request {} from {}", request.getRequestURI(), request.getRemoteAddr());
-        String u = request.getRequestURI();
-        int i = u.lastIndexOf("/");
-        String x = u.substring(i+1);
+        String x = StringUtils.getAfterLast(request.getRequestURI(), "/");
         Collection<Object[]> byGroup = graphDataHolder.getByGroup(x);
         return byGroup;
     }

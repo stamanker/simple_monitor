@@ -31,7 +31,7 @@ public class RequestWorker {
         log.info("...");
         System.out.println("...");
         CallData[] data = new CallData[] {
-            new CallData("terms", "http://google.com.ua/", null, "GET"),
+            new CallData("ping1", "http://google.com.ua/", null, "GET"),
         };
 //        List<CompletableFuture> list = new ArrayList<>();
         for(CallData callerData : data) {

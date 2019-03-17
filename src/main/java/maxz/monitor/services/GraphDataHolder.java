@@ -17,7 +17,7 @@ public class GraphDataHolder {
 
     @PostConstruct
     private void setupGroups() {
-        groups.put("terms", "gw");
+        groups.put("ping1", "gw");
     }
 
     public void record(String source, Object d) {

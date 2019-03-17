@@ -16,9 +16,8 @@ public class CallWrapper extends BaseCaller {
         long took;
         ResStatus status;
         try {
-            String x = processRequest(data.url, data.fileName, data.method);
-            //out.println("x = " + x);
-            if(x == null) {
+            String r = processRequest(data.url, data.fileName, data.method);
+            if(r == null) {
                 status = ResStatus.FAIL;
             } else {
                 status = ResStatus.OK;
