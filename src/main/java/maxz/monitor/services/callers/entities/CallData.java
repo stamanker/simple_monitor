@@ -1,4 +1,4 @@
-package maxz.monitor.services.callers;
+package maxz.monitor.services.callers.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString
 @Data
-@EqualsAndHashCode(of = "url, filename, method")
+@EqualsAndHashCode(of = {"url", "fileName", "method"})
 public class CallData {
 
     public String name;

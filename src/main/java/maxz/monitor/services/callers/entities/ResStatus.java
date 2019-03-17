@@ -1,4 +1,4 @@
-package maxz.monitor.services.callers;
+package maxz.monitor.services.callers.entities;
 
 public enum ResStatus {
     FAIL,

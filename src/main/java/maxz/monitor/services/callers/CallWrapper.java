@@ -1,14 +1,15 @@
 package maxz.monitor.services.callers;
 
+import maxz.monitor.services.callers.entities.CallData;
+import maxz.monitor.services.callers.entities.ResStatus;
+import maxz.monitor.services.callers.entities.Response;
 import maxz.monitor.services.callers.exceptions.SetupException;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 import static java.lang.System.*;
 
-@Component
-public class CommonCaller extends BaseCaller {
+public class CallWrapper extends BaseCaller {
 
     public Response call(CallData data) {
         long start = currentTimeMillis();
