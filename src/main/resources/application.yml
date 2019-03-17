@@ -1,0 +1,14 @@
+
+management:
+  metrics:
+    use-global-registry: false # true by default
+    export:
+      {system}:
+        enabled: false # true by default
+
+server:
+  port: 8888
+
+spring:
+  main:
+    banner-mode: "off"
