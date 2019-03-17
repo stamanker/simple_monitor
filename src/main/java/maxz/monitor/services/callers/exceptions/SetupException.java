@@ -6,7 +6,4 @@ public class SetupException extends RuntimeException {
         super(message, e);
     }
 
-    public SetupException(String s) {
-        super(s);
-    }
 }

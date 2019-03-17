@@ -7,13 +7,12 @@ import org.springframework.http.MediaType;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class BaseCaller {
 
-
+    //TODO replace to use spring's
     public String processRequest(String url, String fileName2Read, String method) throws IOException {
         URL u = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) u.openConnection();
@@ -21,6 +20,9 @@ public abstract class BaseCaller {
         conn.setRequestMethod(method);
         conn.setRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         //conn.setRequestProperty("Content-Length", 0+"");//TODO fix
+        if(method.equals("POST")) {
+            throw new IllegalStateException("not implemented");
+        }
         readFileIntoStream(fileName2Read, conn);
         return readResponse(conn);
     }
