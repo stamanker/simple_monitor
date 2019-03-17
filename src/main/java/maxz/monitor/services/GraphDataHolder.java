@@ -44,6 +44,7 @@ public class GraphDataHolder {
 
     public Collection<Object[]> getBySource(String s) {
         List<Object[]> result = new ArrayList<>();
+        result.add(new Object[]{"Time", s});
         result.addAll(data.values().stream()
                 .flatMap(it->it.entrySet().stream())
                 .filter(x -> x.getKey().equals(s))
@@ -51,7 +52,6 @@ public class GraphDataHolder {
                 .findFirst()
                 .orElseGet(ArrayList::new)
         );
-        result.add(0, new Object[]{"Time", s});
         return result;
     }
 
