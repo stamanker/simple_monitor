@@ -85,12 +85,6 @@ public class GraphDataHolder {
     public static void main(String[] args) {
         GraphDataHolder x = new GraphDataHolder();
         x.setupGroups();
-        x.record("terms", 3453);
-        x.record("terms", 3);
-        x.record("terms", 20);
-        x.record("grades", 100);
-        x.record("grades", 200);
-        x.record("spr", 5);
         x.record("spr", 1);
         Collection<Object[]> gw = x.getByGroup("gw");
         for (Object[] objects : gw) {

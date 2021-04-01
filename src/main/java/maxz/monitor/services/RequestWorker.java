@@ -31,7 +31,7 @@ public class RequestWorker {
         log.info("...");
         System.out.println("...");
         CallData[] data = new CallData[] {
-            new CallData("ping1", "http://google.com.ua/", null, "GET"),
+            new CallData("ping1", "http://dft11-t07-jws01.lab.nordigy.ru:8088/ringcentral/API/WSDL", null, "GET"),
         };
 //        List<CompletableFuture> list = new ArrayList<>();
         for(CallData callerData : data) {
