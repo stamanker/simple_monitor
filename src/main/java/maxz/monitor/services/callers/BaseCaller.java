@@ -2,66 +2,54 @@ package maxz.monitor.services.callers;
 
 import lombok.extern.slf4j.Slf4j;
 import maxz.monitor.services.callers.exceptions.SetupException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class BaseCaller {
 
-    //TODO replace to use spring's
-    public String processRequest(String url, String fileName2Read, String method) throws IOException {
-        URL u = new URL(url);
-        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-        conn.setDoOutput(true);
-        conn.setRequestMethod(method);
-        conn.setRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        //conn.setRequestProperty("Content-Length", 0+"");//TODO fix
-        if(method.equals("POST")) {
-            throw new IllegalStateException("not implemented");
-        }
-        readFileIntoStream(fileName2Read, conn);
-        return readResponse(conn);
+    public String processRequest(String url) {
+        return getRestTemplateNoExceptions().getForEntity(url, String.class).getBody();
     }
 
-    private void readFileIntoStream(String fileName2Read, HttpURLConnection conn) throws IOException {
-        if(fileName2Read!=null) {
-            String data = readFileFromResources(fileName2Read);
-            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                wr.write(data.getBytes());
+    private static RestTemplate getRestTemplateNoExceptions() {
+//        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+//        httpRequestFactory.setConnectionRequestTimeout(1_000);
+//        httpRequestFactory.setConnectTimeout(1_000);
+//        httpRequestFactory.setReadTimeout(1_000);
+//
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
             }
-        }
-    }
 
-    protected String readResponse(HttpURLConnection conn) throws IOException {
-        StringBuilder content = new StringBuilder();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                content.append(line);
-                content.append(System.lineSeparator());
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+                System.out.println("response = " + response);
             }
-        }
-        return content.toString();
+        });
+
+//        HttpComponentsClientHttpRequestFactory rf = (HttpComponentsClientHttpRequestFactory) restTemplate.getRequestFactory();
+//        rf.setReadTimeout(3_000);
+//        rf.setConnectTimeout(3_000);
+
+        return restTemplate;
     }
 
-    protected String readFileFromResources(String filename) {
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource(filename).getFile());
-            return readStream2String(new FileInputStream(file));
-        } catch (Exception e) {
-            throw new SetupException(e.getMessage(), e);
-        }
-    }
 
-    private String readStream2String(InputStream inputStream) throws IOException {
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            return br.lines().collect(Collectors.joining("\n"));
-        }
-    }
 
 }

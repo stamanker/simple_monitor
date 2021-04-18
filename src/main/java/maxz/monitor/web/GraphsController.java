@@ -1,4 +1,4 @@
-package maxz.monitor.controllers;
+package maxz.monitor.web;
 
 import lombok.extern.slf4j.Slf4j;
 import maxz.monitor.services.GraphDataHolder;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Collection;
 
 @RestController()
@@ -19,8 +18,8 @@ public class GraphsController {
     @Autowired
     GraphDataHolder graphDataHolder;
 
-    @RequestMapping(value = {"/ping1", "/other"})
-    public Collection<Object[]> getPlannerData(HttpServletRequest request) throws Exception {
+    @RequestMapping(value = {"/metric/*"})
+    public Collection<Object[]> getPlannerData(HttpServletRequest request) {
         log.info("request {} from {}", request.getRequestURI(), request.getRemoteAddr());
         String x = StringUtils.getAfterLast(request.getRequestURI(), "/");
         Collection<Object[]> byGroup = graphDataHolder.getBySource(x);
@@ -28,7 +27,7 @@ public class GraphsController {
         return byGroup;
     }
 
-    @RequestMapping(value = {"/planner"})
+    @RequestMapping(value = {"/group/*"})
     public Collection<Object[]> getPlannerData2(HttpServletRequest request) throws Exception {
         log.info("request {} from {}", request.getRequestURI(), request.getRemoteAddr());
         String x = StringUtils.getAfterLast(request.getRequestURI(), "/");
@@ -37,9 +36,9 @@ public class GraphsController {
     }
 
     private void printEntries(String x, Collection<Object[]> byGroup) {
-        System.out.println("req = " + x);
+        //System.out.println("req = " + x);
         for (Object[] objects : byGroup) {
-            System.out.println(Arrays.toString(objects));
+            //System.out.println(Arrays.toString(objects));
         }
     }
 

@@ -1,8 +1,11 @@
 package maxz.monitor.services;
 
 import lombok.extern.slf4j.Slf4j;
-import maxz.monitor.services.callers.entities.CallData;
+import maxz.monitor.services.callers.entities.HttpTask;
 import maxz.monitor.services.callers.CallWrapper;
+import maxz.monitor.services.callers.entities.GeneralTask;
+import maxz.monitor.services.callers.entities.ITask;
+import maxz.monitor.services.callers.entities.ResStatus;
 import maxz.monitor.services.callers.entities.Response;
 //import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,29 +20,46 @@ import java.util.concurrent.ExecutorService;
 //@Timed
 public class RequestWorker {
 
-    private final ExecutorService executor;
-    private final GraphDataHolder graphDataHolder;
-
     @Autowired
-    public RequestWorker(ExecutorService executor, GraphDataHolder dataHolder) {
-        this.executor = executor;
-        this.graphDataHolder = dataHolder;
-    }
+    private ExecutorService executor;
+    @Autowired
+    private GraphDataHolder graphDataHolder;
 
-    @Scheduled(fixedDelay = 5_000)
+    @Scheduled(fixedDelay = 2_000)
     public void process() {
-        log.info("...");
-        System.out.println("...");
-        CallData[] data = new CallData[] {
-            new CallData("ping1", "http://dft11-t07-jws01.lab.nordigy.ru:8088/ringcentral/API/WSDL", null, "GET"),
+        ITask[] tasks = new ITask[] {
+            new HttpTask("jws01", "http://google.com"),
+            new GeneralTask("FreeMem") {
+
+            },
+            new GeneralTask("Threads") {
+
+            },
         };
 //        List<CompletableFuture> list = new ArrayList<>();
-        for(CallData callerData : data) {
+        for(ITask task : tasks) {
 //            list.add(
                 CompletableFuture.runAsync(() -> {
-                    Response res = new CallWrapper().call(callerData);
-                    graphDataHolder.record(callerData.name, res.duration);
-                    log.info("*** RequestWorker.process {} = {} (took {} ms)", callerData.name, res, res.duration);
+                    Response res;
+                    if(task instanceof HttpTask) {
+                        res = new CallWrapper().call((HttpTask)task);
+                    } else {
+                        if(task.getName().equalsIgnoreCase("FreeMem")) {
+                            res = new Response(
+                                    ResStatus.OK,
+                                    Runtime.getRuntime().freeMemory()
+                            );
+                        } else if(task.getName().equalsIgnoreCase("Threads")) {
+                            res = new Response(
+                                    ResStatus.OK,
+                                    Thread.activeCount()
+                            );
+                        } else {
+                            throw new RuntimeException();
+                        }
+                    }
+                    graphDataHolder.record(task.getName(), res.value);
+                    //log.info("*** RequestWorker.process {} = {} (took {} ms)", task.getName(), res, res.value);
                 }, executor)
 //            )
             ;

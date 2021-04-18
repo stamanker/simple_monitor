@@ -8,6 +8,6 @@ import lombok.ToString;
 public class Response {
 
     public ResStatus status;
-    public long duration;
+    public long value;
 
 }

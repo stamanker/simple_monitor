@@ -6,23 +6,57 @@
     <script type="text/javascript">
         google.load("visualization", "1", {packages : [ "corechart" ]});
         function drawChart() {
-            $.get("/api/v1/graph/ping1", function(mydata) {
-                var data = google.visualization.arrayToDataTable(mydata);
-                var options = {
+            $.get("/api/v1/graph/group/jws", function(mydata) {
+                let data = google.visualization.arrayToDataTable(mydata);
+                let options = {
                        title :      'Response time',
-                       hAxis :      {title : 'Time', titleTextStyle : {color : '#333', size: '12px'}},
+                       hAxis :      {title : 'Time', textStyle : {color : '#333', fontSize: 10}},
                        vAxis :      {minValue : 0},
                        curveType:   'function',
                        legend:      { position: 'right' }
                 };
-                var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
+                let chart = new google.visualization.ColumnChart(document.getElementById('chart_div1'));
+                chart.draw(data, options);
+            });
+            $.get("/api/v1/graph/metric/FreeMem", function(mydata) {
+                let data = google.visualization.arrayToDataTable(mydata);
+                let options = {
+                       title :      'Free memory',
+                       hAxis :      {title : 'time', textStyle : {color : '#333', fontSize: 12}},
+                       vAxis :      {minValue : 0},
+                       curveType:   'function',
+                       legend:      { position: 'right' }
+                };
+                let chart = new google.visualization.AreaChart(document.getElementById('chart_div2'));
+                chart.draw(data, options);
+            });
+            $.get("/api/v1/graph/metric/Threads", function(mydata) {
+                let data = google.visualization.arrayToDataTable(mydata);
+                let options = {
+                       title :      'Threads',
+                       hAxis :      {title : 'time', textStyle : {color : '#333', fontSize: 8}},
+                       vAxis :      {minValue : 0},
+                       curveType:   'function',
+                       legend:      { position: 'right' }
+                };
+                let chart = new google.visualization.AreaChart(document.getElementById('chart_div3'));
                 chart.draw(data, options);
             });
         }
     </script>
 </head>
-<body onload="drawChart()" style="background-color:#C0C0C0;">
+<body onload="drawChart()" style="background-color:#FFFFFF;">
 Graphs...<br>
-<div id="chart_div1" style="width: 1400px; height: 400px;"></div>
+<div id="chart_div1" style="width: 1400px; height: 300px;"></div><br>
+<div id="chart_div2" style="width: 1400px; height: 300px;"></div><br>
+<div id="chart_div3" style="width: 1400px; height: 300px;"></div><br>
+<script>
+       function reread() {
+<!--           console.log("aaa");-->
+            drawChart();
+            setTimeout(reread, 1000);
+       };
+       reread();
+</script>
 </body>
 </html>
